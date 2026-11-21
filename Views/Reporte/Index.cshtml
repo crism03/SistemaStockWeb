@@ -1,0 +1,36 @@
+﻿@using SistemaStockWeb.Models.Enum
+@{
+    ViewData["Title"] = "Reportes";
+    ViewData["SubTitle"] = "Reporte de movimientos de stock";
+}
+
+<form method="get">
+    <div class="row g-3">
+        <div class="col-md-3">
+            <label for="desde" class="form-label">Desde</label>
+            <input type="date" id="desde" name="desde" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label for="hasta" class="form-label">Hasta</label>
+            <input type="date" id="hasta" name="hasta" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label for="tipo" class="form-label">Tipo de movimiento</label>
+            <select id="tipo" name="tipo" class="form-select" asp-items="Html.GetEnumSelectList<TipoMovimiento>()">
+                <option value="">Todos</option>
+            </select>
+        </div>
+        <div class="col-md-3 d-flex align-items-end gap-2">
+            <button type="submit" formaction="@Url.Action("DescargarExcel", "Reporte")" class="btn btn-success w-100">
+                <i class="bi bi-file-earmark-excel"></i> Excel
+            </button>
+            <button type="submit" formaction="@Url.Action("DescargarPdf", "Reporte")" class="btn btn-danger w-100">
+                <i class="bi bi-file-earmark-pdf"></i> PDF
+            </button>
+        </div>
+    </div>
+    <p class="text-muted small mt-3 mb-0">
+        Dejá las fechas vacías para incluir todos los movimientos. Cada transferencia aparece en dos filas:
+        la salida del depósito de origen y la entrada al de destino.
+    </p>
+</form>

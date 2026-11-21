@@ -1,0 +1,15 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SistemaStockWeb.Models.Entities;
+
+/// <summary>
+/// Campos comunes a todas las tablas del sistema.
+/// </summary>
+public class BaseEntity
+{
+    [Key]
+    public int id { get; set; }
+    public bool Activo { get; set; } = true;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime? UpdatedAt { get; set; }
+}

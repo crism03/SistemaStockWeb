@@ -1,0 +1,61 @@
+﻿@model SistemaStockWeb.Models.ViewModels.Movimiento.TransferenciaViewModel
+@{
+    ViewData["Title"] = "Movimientos";
+    ViewData["SubTitle"] = "Transferencia entre depósitos";
+}
+
+<form asp-action="Transferencia" method="post" id="formTransferencia">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="idProducto" class="form-label"></label>
+            <select asp-for="idProducto" asp-items="Model.Productos" class="form-select">
+                <option value="">-- Seleccionar --</option>
+            </select>
+            <span asp-validation-for="idProducto" class="text-danger"></span>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="Cantidad" class="form-label"></label>
+            <input asp-for="Cantidad" type="number" min="1" class="form-control" />
+            <span asp-validation-for="Cantidad" class="text-danger"></span>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="idDepositoOrigen" class="form-label">Depósito origen</label>
+            <select asp-for="idDepositoOrigen" asp-items="Model.Depositos" class="form-select">
+                <option value="">-- Seleccionar --</option>
+            </select>
+            <span asp-validation-for="idDepositoOrigen" class="text-danger"></span>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="idDepositoDestino" class="form-label"></label>
+            <select asp-for="idDepositoDestino" asp-items="Model.Depositos" class="form-select">
+                <option value="">-- Seleccionar --</option>
+            </select>
+            <span asp-validation-for="idDepositoDestino" class="text-danger"></span>
+        </div>
+        <div class="col-12 mb-3">
+            <label asp-for="Observaciones" class="form-label"></label>
+            <textarea asp-for="Observaciones" class="form-control" rows="2"></textarea>
+            <span asp-validation-for="Observaciones" class="text-danger"></span>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Registrar transferencia</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Evita enviar el formulario con el mismo depósito de origen y destino.
+        document.getElementById('formTransferencia').addEventListener('submit', function (e) {
+            const origen = document.getElementById('idDepositoOrigen').value;
+            const destino = document.getElementById('idDepositoDestino').value;
+            if (origen && origen === destino) {
+                e.preventDefault();
+                mostrarError('Los depósitos de origen y destino deben ser distintos.');
+            }
+        });
+    </script>
+}

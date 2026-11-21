@@ -1,0 +1,45 @@
+﻿@model SistemaStockWeb.Models.ViewModels.ProductoViewModel
+@{
+    ViewData["Title"] = "Productos";
+    ViewData["SubTitle"] = "Detalle del producto";
+}
+
+<dl class="row">
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Codigo)</dt>
+    <dd class="col-sm-9">@(Model.Codigo ?? "-")</dd>
+
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Nombre)</dt>
+    <dd class="col-sm-9">@Model.Nombre</dd>
+
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Descripcion)</dt>
+    <dd class="col-sm-9">@(Model.Descripcion ?? "-")</dd>
+
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.idCategoria)</dt>
+    <dd class="col-sm-9">@Model.CategoriaNombre</dd>
+
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.UnidadDeMedida)</dt>
+    <dd class="col-sm-9">@Model.UnidadDeMedida</dd>
+
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.PrecioCosto)</dt>
+    <dd class="col-sm-9">@Model.PrecioCosto.ToString("C2")</dd>
+
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.PrecioVenta)</dt>
+    <dd class="col-sm-9">@Model.PrecioVenta.ToString("C2")</dd>
+
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.StockMinimo)</dt>
+    <dd class="col-sm-9">@Model.StockMinimo</dd>
+
+    <dt class="col-sm-3">Estado</dt>
+    <dd class="col-sm-9">
+        <span class="badge @(Model.Activo ? "text-bg-success" : "text-bg-secondary")">@(Model.Activo ? "Activo" : "Inactivo")</span>
+    </dd>
+
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.CreatedAt)</dt>
+    <dd class="col-sm-9">@Model.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</dd>
+
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.UpdatedAt)</dt>
+    <dd class="col-sm-9">@(Model.UpdatedAt?.ToLocalTime().ToString("dd/MM/yyyy HH:mm") ?? "-")</dd>
+</dl>
+
+<a asp-action="Edit" asp-route-id="@Model.id" class="btn btn-primary">Editar</a>
+<a asp-action="Index" class="btn btn-secondary">Volver</a>

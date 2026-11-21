@@ -1,0 +1,52 @@
+﻿@model SistemaStockWeb.Models.ViewModels.StockViewModel
+@{
+    ViewData["Title"] = "Stock";
+    ViewData["SubTitle"] = "Stock actual por depósito";
+}
+
+<div class="table-responsive">
+    <table class="table table-striped align-middle" id="miTabla">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Producto</th>
+                <th>Categoría</th>
+                <th>Unidad</th>
+                @foreach (var deposito in Model.Depositos)
+                {
+                    <th class="text-end">@deposito.Nombre</th>
+                }
+                <th class="text-end">Total</th>
+                <th class="text-end">Mínimo</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var producto in Model.Productos)
+            {
+                <tr>
+                    <td>@producto.Codigo</td>
+                    <td>@producto.Nombre</td>
+                    <td>@producto.CategoriaNombre</td>
+                    <td>@producto.UnidadDeMedida</td>
+                    @foreach (var deposito in Model.Depositos)
+                    {
+                        <td class="text-end">@producto.CantidadPorDeposito.GetValueOrDefault(deposito.id)</td>
+                    }
+                    <td class="text-end fw-bold">@producto.Total</td>
+                    <td class="text-end">@producto.StockMinimo</td>
+                    <td>
+                        @if (producto.BajoMinimo)
+                        {
+                            <span class="badge text-bg-danger">Stock bajo</span>
+                        }
+                        else
+                        {
+                            <span class="badge text-bg-success">Normal</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

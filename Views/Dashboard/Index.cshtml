@@ -1,0 +1,196 @@
+﻿@model SistemaStockWeb.Models.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Panel de control";
+    ViewData["SubTitle"] = "Resumen general del sistema";
+}
+
+@* ================= Indicadores ================= *@
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary h-100">
+            <div class="card-body">
+                <h6>Productos activos</h6><h2>@Model.TotalProductosActivos</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info h-100">
+            <div class="card-body">
+                <h6>Proveedores</h6><h2>@Model.TotalProveedoresActivos</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info h-100">
+            <div class="card-body">
+                <h6>Clientes</h6><h2>@Model.TotalClientesActivos</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info h-100">
+            <div class="card-body">
+                <h6>Depósitos</h6><h2>@Model.TotalDepositosActivos</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success h-100">
+            <div class="card-body">
+                <h6>Valor del inventario (a costo)</h6><h2>@Model.ValorTotalInventario.ToString("C2")</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success h-100">
+            <div class="card-body">
+                <h6>Ventas de hoy</h6><h2>@Model.ValorVentasHoy.ToString("C2")</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-dark bg-warning h-100">
+            <div class="card-body">
+                <h6>Movimientos de hoy</h6><h2>@Model.MovimientosHoy</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white @(Model.TotalAlertas > 0 ? "bg-danger" : "bg-secondary") h-100">
+            <div class="card-body">
+                <h6>Alertas de reposición</h6><h2>@Model.TotalAlertas</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* ================= Alertas de reposición ================= *@
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white fw-semibold text-danger">Alertas de reposición</div>
+    <div class="card-body p-0 table-responsive">
+        <table class="table table-sm table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Producto</th>
+                    <th>Categoría</th>
+                    <th class="text-end">Stock actual</th>
+                    <th class="text-end">Stock mínimo</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var alerta in Model.AlertasReposicion)
+                {
+                    <tr class="@(alerta.SinStock ? "table-danger" : "")">
+                        <td>@alerta.Producto</td>
+                        <td>@alerta.Categoria</td>
+                        <td class="text-end fw-bold text-danger">@alerta.StockTotal</td>
+                        <td class="text-end">@alerta.StockMinimo</td>
+                        <td>
+                            <span class="badge @(alerta.SinStock ? "text-bg-danger" : "text-bg-warning")">@alerta.Estado</span>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.AlertasReposicion.Any())
+                {
+                    <tr><td colspan="5" class="text-center text-success py-3">Sin alertas de reposición</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@* ================= Gráficos ================= *@
+<div class="row g-3 mb-4">
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white fw-semibold">Top 5 con mayor stock</div>
+            <div class="card-body"><canvas id="graficoMayor"></canvas></div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white fw-semibold">Top 5 con menor stock</div>
+            <div class="card-body"><canvas id="graficoMenor"></canvas></div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white fw-semibold">Stock por depósito</div>
+            <div class="card-body"><canvas id="graficoDepositos"></canvas></div>
+        </div>
+    </div>
+</div>
+
+@* ================= Últimos movimientos ================= *@
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white fw-semibold">Últimos movimientos</div>
+    <div class="card-body p-0 table-responsive">
+        <table class="table table-sm table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Tipo</th>
+                    <th>Producto</th>
+                    <th>Origen</th>
+                    <th>Destino</th>
+                    <th class="text-end">Cantidad</th>
+                    <th>Usuario</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var movimiento in Model.UltimosMovimientos)
+                {
+                    <tr>
+                        <td>@movimiento.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@Html.DisplayFor(_ => movimiento.Tipo)</td>
+                        <td>@movimiento.ProductoNombre</td>
+                        <td>@(movimiento.DepositoOrigenNombre ?? "-")</td>
+                        <td>@(movimiento.DepositoDestinoNombre ?? "-")</td>
+                        <td class="text-end">@movimiento.Cantidad</td>
+                        <td>@movimiento.UsuarioRegistro</td>
+                    </tr>
+                }
+                @if (!Model.UltimosMovimientos.Any())
+                {
+                    <tr><td colspan="7" class="text-center text-muted py-3">Todavía no hay movimientos registrados</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script>
+        const topMayor = @Json.Serialize(Model.TopMayorStock);
+        const topMenor = @Json.Serialize(Model.TopMenorStock);
+        const porDeposito = @Json.Serialize(Model.StockPorDeposito);
+
+        const graficoBarras = (id, datos, color) => new Chart(document.getElementById(id), {
+            type: 'bar',
+            data: {
+                labels: datos.map(x => x.etiqueta),
+                datasets: [{ label: 'Stock total', data: datos.map(x => x.valor), backgroundColor: color }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+            }
+        });
+
+        graficoBarras('graficoMayor', topMayor, '#198754');
+        graficoBarras('graficoMenor', topMenor, '#dc3545');
+
+        new Chart(document.getElementById('graficoDepositos'), {
+            type: 'doughnut',
+            data: {
+                labels: porDeposito.map(x => x.etiqueta),
+                datasets: [{
+                    data: porDeposito.map(x => x.valor),
+                    backgroundColor: ['#0d6efd', '#198754', '#ffc107', '#dc3545', '#6f42c1', '#20c997']
+                }]
+            }
+        });
+    </script>
+}

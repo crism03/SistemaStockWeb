@@ -1,0 +1,30 @@
+﻿@model SistemaStockWeb.Models.ViewModels.CategoriaViewModel
+@{
+    ViewData["Title"] = "Categorías";
+    ViewData["SubTitle"] = "Detalle de la categoría";
+}
+
+<dl class="row">
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Nombre)</dt>
+    <dd class="col-sm-9">@Model.Nombre</dd>
+
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Descripcion)</dt>
+    <dd class="col-sm-9">@(Model.Descripcion ?? "-")</dd>
+
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.CantidadProductos)</dt>
+    <dd class="col-sm-9">@Model.CantidadProductos</dd>
+
+    <dt class="col-sm-3">Estado</dt>
+    <dd class="col-sm-9">
+        <span class="badge @(Model.Activo ? "text-bg-success" : "text-bg-secondary")">@(Model.Activo ? "Activa" : "Inactiva")</span>
+    </dd>
+
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.CreatedAt)</dt>
+    <dd class="col-sm-9">@Model.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</dd>
+
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.UpdatedAt)</dt>
+    <dd class="col-sm-9">@(Model.UpdatedAt?.ToLocalTime().ToString("dd/MM/yyyy HH:mm") ?? "-")</dd>
+</dl>
+
+<a asp-action="Edit" asp-route-id="@Model.id" class="btn btn-primary">Editar</a>
+<a asp-action="Index" class="btn btn-secondary">Volver</a>

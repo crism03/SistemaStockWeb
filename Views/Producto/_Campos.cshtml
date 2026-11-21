@@ -1,0 +1,54 @@
+﻿@model SistemaStockWeb.Models.ViewModels.ProductoViewModel
+
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <label asp-for="Codigo" class="form-label"></label>
+        <input asp-for="Codigo" class="form-control" />
+        <span asp-validation-for="Codigo" class="text-danger"></span>
+    </div>
+    <div class="col-md-8 mb-3">
+        <label asp-for="Nombre" class="form-label"></label>
+        <input asp-for="Nombre" class="form-control" />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+    <div class="col-12 mb-3">
+        <label asp-for="Descripcion" class="form-label"></label>
+        <input asp-for="Descripcion" class="form-control" />
+        <span asp-validation-for="Descripcion" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="idCategoria" class="form-label"></label>
+        <select asp-for="idCategoria" asp-items="Model.Categorias" class="form-select">
+            <option value="">-- Seleccionar --</option>
+        </select>
+        <span asp-validation-for="idCategoria" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="UnidadDeMedida" class="form-label"></label>
+        <select asp-for="UnidadDeMedida"
+                asp-items="Html.GetEnumSelectList<SistemaStockWeb.Models.Enum.UnidadMedida>()"
+                class="form-select"></select>
+        <span asp-validation-for="UnidadDeMedida" class="text-danger"></span>
+    </div>
+    <div class="col-md-4 mb-3">
+        <label asp-for="PrecioCosto" class="form-label"></label>
+        <input asp-for="PrecioCosto" type="number" step="0.01" min="0" class="form-control" />
+        <span asp-validation-for="PrecioCosto" class="text-danger"></span>
+    </div>
+    <div class="col-md-4 mb-3">
+        <label asp-for="PrecioVenta" class="form-label"></label>
+        <input asp-for="PrecioVenta" type="number" step="0.01" min="0" class="form-control" />
+        <span asp-validation-for="PrecioVenta" class="text-danger"></span>
+    </div>
+    <div class="col-md-4 mb-3">
+        <label asp-for="StockMinimo" class="form-label"></label>
+        <input asp-for="StockMinimo" type="number" min="0" class="form-control" />
+        <span asp-validation-for="StockMinimo" class="text-danger"></span>
+    </div>
+    <div class="col-12 mb-3">
+        <div class="form-check form-switch">
+            <input asp-for="Activo" class="form-check-input" />
+            <label asp-for="Activo" class="form-check-label"></label>
+        </div>
+    </div>
+</div>

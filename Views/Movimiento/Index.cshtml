@@ -1,0 +1,87 @@
+﻿@using SistemaStockWeb.Models.Enum
+@model List<SistemaStockWeb.Models.ViewModels.Movimiento.MovimientoViewModel>
+@{
+    ViewData["Title"] = "Movimientos";
+    ViewData["SubTitle"] = "Historial de movimientos";
+    var tipoSeleccionado = Context.Request.Query["tipo"].ToString();
+    var puedeOperar = User.IsInRole("Administrador") || User.IsInRole("Encargado") || User.IsInRole("Operador");
+}
+
+<div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+    <form method="get" class="row g-2">
+        <div class="col-auto">
+            <select name="idProducto" class="form-select form-select-sm" asp-items="ViewBag.Productos">
+                <option value="">Todos los productos</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <select name="tipo" class="form-select form-select-sm">
+                <option value="">Todos los tipos</option>
+                @foreach (var opcion in Html.GetEnumSelectList<TipoMovimiento>())
+                {
+                    <option value="@opcion.Value" selected="@(opcion.Value == tipoSeleccionado)">@opcion.Text</option>
+                }
+            </select>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-sm btn-secondary">Filtrar</button>
+        </div>
+    </form>
+
+    @if (puedeOperar)
+    {
+        <div class="btn-group">
+            <a asp-action="Entrada" class="btn btn-sm btn-outline-success"><i class="bi bi-box-arrow-in-down"></i> Nueva entrada</a>
+            <a asp-action="Salida" class="btn btn-sm btn-outline-danger"><i class="bi bi-box-arrow-up"></i> Nueva salida</a>
+            <a asp-action="Transferencia" class="btn btn-sm btn-outline-primary"><i class="bi bi-arrow-left-right"></i> Transferencia</a>
+        </div>
+    }
+</div>
+
+@if (Model.Count == (int)ViewBag.MaximoHistorial)
+{
+    <div class="alert alert-info">
+        Se muestran los últimos @ViewBag.MaximoHistorial movimientos. Usá los filtros para acotar la búsqueda.
+    </div>
+}
+
+<div class="table-responsive">
+    <table class="table table-striped align-middle" id="miTabla" data-order='[[0,"desc"]]'>
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Tipo</th>
+                <th>@Html.DisplayNameFor(m => m.First().ProductoNombre)</th>
+                <th>@Html.DisplayNameFor(m => m.First().DepositoOrigenNombre)</th>
+                <th>@Html.DisplayNameFor(m => m.First().DepositoDestinoNombre)</th>
+                <th class="text-end">Cantidad</th>
+                <th>Proveedor / Cliente</th>
+                <th>@Html.DisplayNameFor(m => m.First().UsuarioRegistro)</th>
+                <th>Observaciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var claseBadge = item.Tipo switch
+                {
+                    TipoMovimiento.Entrada => "text-bg-primary",
+                    TipoMovimiento.Salida => "text-bg-danger",
+                    TipoMovimiento.TransferenciaEntrada => "text-bg-success",
+                    _ => "text-bg-warning"
+                };
+                <tr>
+                    <td data-order="@item.Fecha.ToString("yyyyMMddHHmmss")">@item.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td><span class="badge @claseBadge">@Html.DisplayFor(_ => item.Tipo)</span></td>
+                    <td>@item.ProductoNombre</td>
+                    <td>@(item.DepositoOrigenNombre ?? "-")</td>
+                    <td>@(item.DepositoDestinoNombre ?? "-")</td>
+                    <td class="text-end">@item.Cantidad</td>
+                    <td>@(item.ProveedorNombre ?? item.ClienteNombre ?? "-")</td>
+                    <td>@item.UsuarioRegistro</td>
+                    <td>@item.Observaciones</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

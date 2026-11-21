@@ -1,0 +1,53 @@
+﻿@model IEnumerable<SistemaStockWeb.Models.ViewModels.ClienteViewModel>
+@{
+    ViewData["Title"] = "Clientes";
+    ViewData["SubTitle"] = "Listado de clientes";
+}
+
+<div class="d-flex justify-content-end mb-3">
+    <a asp-action="Create" class="btn btn-sm btn-outline-primary">
+        <i class="bi bi-plus"></i> Nuevo cliente
+    </a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped align-middle" id="miTabla">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(m => m.Nombre)</th>
+                <th>@Html.DisplayNameFor(m => m.Documento)</th>
+                <th>@Html.DisplayNameFor(m => m.Contacto)</th>
+                <th>@Html.DisplayNameFor(m => m.Telefono)</th>
+                <th>@Html.DisplayNameFor(m => m.Email)</th>
+                <th>Estado</th>
+                <th class="text-end">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Nombre</td>
+                    <td>@item.Documento</td>
+                    <td>@item.Contacto</td>
+                    <td>@item.Telefono</td>
+                    <td>@item.Email</td>
+                    <td>
+                        <span class="badge @(item.Activo ? "text-bg-success" : "text-bg-secondary")">@(item.Activo ? "Activo" : "Inactivo")</span>
+                    </td>
+                    <td class="text-end">
+                        <a asp-action="Edit" asp-route-id="@item.id" class="btn btn-sm btn-outline-primary" title="Editar">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <form asp-action="Delete" asp-route-id="@item.id" method="post"
+                              class="d-inline form-eliminar" data-nombre="@item.Nombre">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

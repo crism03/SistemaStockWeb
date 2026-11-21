@@ -1,0 +1,17 @@
+﻿@model SistemaStockWeb.Models.ViewModels.CategoriaViewModel
+@{
+    ViewData["Title"] = "Categorías";
+    ViewData["SubTitle"] = "Editar categoría";
+}
+
+<form asp-action="Edit" asp-route-id="@Model.id" method="post">
+    <input type="hidden" asp-for="id" />
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+    <partial name="_Campos" model="Model" />
+    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
