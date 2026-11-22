@@ -27,7 +27,7 @@ public class ProductoViewModel
 
     public string? CategoriaNombre { get; set; }
 
-    // Opciones del combo de categorías (solo se usa para dibujar el formulario).
+    // Opciones del combo de categorías.
     public List<SelectListItem>? Categorias { get; set; }
 
     [Display(Name = "Unidad de medida")]

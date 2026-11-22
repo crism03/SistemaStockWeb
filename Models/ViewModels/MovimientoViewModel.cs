@@ -3,10 +3,7 @@ using SistemaStockWeb.Models.Enum;
 
 namespace SistemaStockWeb.Models.ViewModels.Movimiento;
 
-/// <summary>
-/// Fila del historial de movimientos. Los campos "...Nombre" los completa AutoMapper
-/// a partir de las entidades relacionadas (ProductoNombre desde Producto.Nombre, etc.).
-/// </summary>
+
 public class MovimientoViewModel
 {
     public int id { get; set; }

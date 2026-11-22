@@ -27,7 +27,7 @@ public class Movimiento : BaseEntity
     public int idProducto { get; set; }
     public Producto? Producto { get; set; }
 
-    // Depósito donde se registra el movimiento (en transferencias, el de salida de la mercadería).
+    // Depósito donde se registra el movimiento.
     [ForeignKey("DepositoOrigen")]
     public int? idDepositoOrigen { get; set; }
     public Deposito? DepositoOrigen { get; set; }

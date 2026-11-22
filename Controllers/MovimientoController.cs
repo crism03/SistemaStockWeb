@@ -13,7 +13,7 @@ namespace SistemaStockWeb.Controllers;
 [Authorize(Roles = RolesOperacion)]
 public class MovimientoController : Controller
 {
-    // El historial lo puede ver cualquier usuario; registrar movimientos requiere uno de estos roles.
+    // Roles autorizados para todo el módulo de movimientos; el rol Consulta no accede.
     private const string RolesOperacion = "Administrador,Encargado,Operador";
     private const int MaximoHistorial = 200;
 
@@ -54,7 +54,6 @@ public class MovimientoController : Controller
 
     // ---------- ENTRADA ----------
 
-    [Authorize(Roles = RolesOperacion)]
     public async Task<IActionResult> Entrada()
     {
         var model = new OperacionStockEntradaViewModel();
@@ -62,7 +61,7 @@ public class MovimientoController : Controller
         return View(model);
     }
 
-    [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = RolesOperacion)]
+    [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Entrada(OperacionStockEntradaViewModel model)
     {
         if (ModelState.IsValid)
@@ -89,7 +88,6 @@ public class MovimientoController : Controller
 
     // ---------- SALIDA ----------
 
-    [Authorize(Roles = RolesOperacion)]
     public async Task<IActionResult> Salida()
     {
         var model = new OperacionStockSalidaViewModel();
@@ -97,7 +95,7 @@ public class MovimientoController : Controller
         return View(model);
     }
 
-    [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = RolesOperacion)]
+    [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Salida(OperacionStockSalidaViewModel model)
     {
         if (ModelState.IsValid)
@@ -124,7 +122,6 @@ public class MovimientoController : Controller
 
     // ---------- TRANSFERENCIA ----------
 
-    [Authorize(Roles = RolesOperacion)]
     public async Task<IActionResult> Transferencia()
     {
         var model = new TransferenciaViewModel();
@@ -132,7 +129,7 @@ public class MovimientoController : Controller
         return View(model);
     }
 
-    [HttpPost, ValidateAntiForgeryToken, Authorize(Roles = RolesOperacion)]
+    [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Transferencia(TransferenciaViewModel model)
     {
         if (ModelState.IsValid)
@@ -187,7 +184,7 @@ public class MovimientoController : Controller
 
     /// <summary>
     /// Aplica los ajustes de stock y guarda los movimientos en una única transacción:
-    /// o se guarda todo, o no se guarda nada. Devuelve null si salió bien o el mensaje de error.
+    /// o se guarda todo, o no se guarda nada.
     /// </summary>
     private async Task<string?> RegistrarAsync(
         int idProducto,

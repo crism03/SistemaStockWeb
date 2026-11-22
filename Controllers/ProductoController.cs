@@ -166,7 +166,7 @@ public class ProductoController : Controller
         UpdatedAt = p.UpdatedAt
     };
 
-    /// <summary>Copia los datos editables del ViewModel a la entidad (se usa al crear y al editar).</summary>
+    
     private static void AplicarCambios(Producto producto, ProductoViewModel model)
     {
         producto.Codigo = model.Codigo?.Trim();
@@ -180,7 +180,7 @@ public class ProductoController : Controller
         producto.Activo = model.Activo;
     }
 
-    /// <summary>Valida que no exista otro producto con el mismo nombre o código; agrega los errores al formulario.</summary>
+    /// <summary>Valida que no exista otro producto con el mismo nombre o código. </summary>
     private async Task<bool> HayDuplicadoAsync(ProductoViewModel model)
     {
         var hayDuplicado = false;

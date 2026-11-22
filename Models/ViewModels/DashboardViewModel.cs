@@ -35,7 +35,7 @@ public class AlertaReposicionViewModel
     public string Estado => SinStock ? "Sin stock" : "Stock bajo";
 }
 
-/// <summary>Par etiqueta/valor para alimentar los gráficos.</summary>
+/// <summary> gráficos. </summary>
 public class StockChartItemViewModel
 {
     public string Etiqueta { get; set; } = string.Empty;

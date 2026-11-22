@@ -2,9 +2,6 @@
 
 namespace SistemaStockWeb.Models.Entities;
 
-/// <summary>
-/// Campos comunes a todas las tablas del sistema.
-/// </summary>
 public class BaseEntity
 {
     [Key]

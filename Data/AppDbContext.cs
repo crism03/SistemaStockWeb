@@ -42,7 +42,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
         modelBuilder.Entity<Producto>().Property(p => p.PrecioCosto).HasPrecision(18, 2);
         modelBuilder.Entity<Producto>().Property(p => p.PrecioVenta).HasPrecision(18, 2);
 
-        // Datos iniciales (fecha fija para que la migración sea estable).
+        // Datos iniciales.
         var fechaInicial = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         modelBuilder.Entity<Categoria>().HasData(

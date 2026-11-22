@@ -36,7 +36,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
 
-// QuestPDF es gratuito bajo licencia Community (proyectos educativos y pequeños).
+// QuestPDF es gratuito bajo licencia Community.
 QuestPDF.Settings.License = LicenseType.Community;
 
 var app = builder.Build();
@@ -49,7 +49,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Formato numérico fijo (punto decimal) para que precios como 12.50 se interpreten bien
+// Formato numérico fijo.
 // sin importar el idioma del equipo donde corra el sistema.
 var cultura = new CultureInfo("en-US");
 app.UseRequestLocalization(new RequestLocalizationOptions
@@ -71,7 +71,7 @@ app.MapControllerRoute(
         pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
-// Aplica las migraciones pendientes (crea la base si no existe) y carga roles y administrador.
+// Aplica las migraciones pendientes y carga roles y administrador.
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
