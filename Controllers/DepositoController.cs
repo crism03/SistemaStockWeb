@@ -24,6 +24,17 @@ public class DepositoController : Controller
         return View(depositos.Select(ToViewModel).ToList());
     }
 
+    // GET: Deposito/Details/5
+    public async Task<IActionResult> Details(int? id)
+    {
+        if (id == null) return NotFound();
+
+        var deposito = await _context.Depositos.AsNoTracking().FirstOrDefaultAsync(d => d.id == id);
+        if (deposito == null) return NotFound();
+
+        return View(ToViewModel(deposito));
+    }
+
     // GET: Deposito/Create
     public IActionResult Create()
     {
@@ -86,9 +97,20 @@ public class DepositoController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    // GET: Deposito/Delete/5
+    public async Task<IActionResult> Delete(int? id)
+    {
+        if (id == null) return NotFound();
+
+        var deposito = await _context.Depositos.AsNoTracking().FirstOrDefaultAsync(d => d.id == id);
+        if (deposito == null) return NotFound();
+
+        return View(ToViewModel(deposito));
+    }
+
     // POST: Deposito/Delete/5
-    [HttpPost, ValidateAntiForgeryToken]
-    public async Task<IActionResult> Delete(int id)
+    [HttpPost, ActionName("Delete"), ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var deposito = await _context.Depositos.FindAsync(id);
         if (deposito == null) return NotFound();

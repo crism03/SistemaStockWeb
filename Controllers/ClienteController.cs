@@ -24,6 +24,17 @@ public class ClienteController : Controller
         return View(clientes.Select(ToViewModel).ToList());
     }
 
+    // GET: Cliente/Details/5
+    public async Task<IActionResult> Details(int? id)
+    {
+        if (id == null) return NotFound();
+
+        var cliente = await _context.Clientes.AsNoTracking().FirstOrDefaultAsync(c => c.id == id);
+        if (cliente == null) return NotFound();
+
+        return View(ToViewModel(cliente));
+    }
+
     // GET: Cliente/Create
     public IActionResult Create()
     {
@@ -34,13 +45,7 @@ public class ClienteController : Controller
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(ClienteViewModel model)
     {
-        if (!ModelState.IsValid) return View(model);
-
-        if (await ExisteDocumentoAsync(model.Documento))
-        {
-            ModelState.AddModelError(nameof(model.Documento), "Ya existe un cliente con este documento.");
-            return View(model);
-        }
+        if (!ModelState.IsValid || await HayDuplicadoAsync(model)) return View(model);
 
         var cliente = new Cliente();
         AplicarCambios(cliente, model);
@@ -67,16 +72,10 @@ public class ClienteController : Controller
     public async Task<IActionResult> Edit(int id, ClienteViewModel model)
     {
         if (id != model.id) return NotFound();
-        if (!ModelState.IsValid) return View(model);
+        if (!ModelState.IsValid || await HayDuplicadoAsync(model)) return View(model);
 
         var cliente = await _context.Clientes.FindAsync(id);
         if (cliente == null) return NotFound();
-
-        if (await ExisteDocumentoAsync(model.Documento, id))
-        {
-            ModelState.AddModelError(nameof(model.Documento), "Ya existe un cliente con este documento.");
-            return View(model);
-        }
 
         AplicarCambios(cliente, model);
         cliente.UpdatedAt = DateTime.UtcNow;
@@ -86,9 +85,20 @@ public class ClienteController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    // GET: Cliente/Delete/5
+    public async Task<IActionResult> Delete(int? id)
+    {
+        if (id == null) return NotFound();
+
+        var cliente = await _context.Clientes.AsNoTracking().FirstOrDefaultAsync(c => c.id == id);
+        if (cliente == null) return NotFound();
+
+        return View(ToViewModel(cliente));
+    }
+
     // POST: Cliente/Delete/5
-    [HttpPost, ValidateAntiForgeryToken]
-    public async Task<IActionResult> Delete(int id)
+    [HttpPost, ActionName("Delete"), ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var cliente = await _context.Clientes.FindAsync(id);
         if (cliente == null) return NotFound();
@@ -131,13 +141,28 @@ public class ClienteController : Controller
         cliente.Activo = model.Activo;
     }
 
-    /// <summary>Verifica si otro cliente ya usa el mismo documento (solo si se informó uno).</summary>
-    private async Task<bool> ExisteDocumentoAsync(string? documento, int idExcluido = 0)
+    /// <summary>Valida que no exista otro cliente con el mismo nombre o documento, sin distinguir mayúsculas.</summary>
+    private async Task<bool> HayDuplicadoAsync(ClienteViewModel model)
     {
-        if (string.IsNullOrWhiteSpace(documento)) return false;
+        var hayDuplicado = false;
+        var nombre = model.Nombre.Trim().ToLower();
 
-        var documentoNormalizado = documento.Trim().ToLower();
-        return await _context.Clientes.AnyAsync(c =>
-            c.id != idExcluido && c.Documento != null && c.Documento.ToLower() == documentoNormalizado);
+        if (await _context.Clientes.AnyAsync(c => c.id != model.id && c.Nombre.ToLower() == nombre))
+        {
+            ModelState.AddModelError(nameof(model.Nombre), "Ya existe un cliente con este nombre.");
+            hayDuplicado = true;
+        }
+
+        if (!string.IsNullOrWhiteSpace(model.Documento))
+        {
+            var documento = model.Documento.Trim().ToLower();
+            if (await _context.Clientes.AnyAsync(c => c.id != model.id && c.Documento != null && c.Documento.ToLower() == documento))
+            {
+                ModelState.AddModelError(nameof(model.Documento), "Ya existe un cliente con este documento.");
+                hayDuplicado = true;
+            }
+        }
+
+        return hayDuplicado;
     }
 }

@@ -10,7 +10,7 @@ using SistemaStockWeb.Models.ViewModels.Movimiento;
 
 namespace SistemaStockWeb.Controllers;
 
-[Authorize]
+[Authorize(Roles = RolesOperacion)]
 public class MovimientoController : Controller
 {
     // El historial lo puede ver cualquier usuario; registrar movimientos requiere uno de estos roles.
@@ -80,7 +80,7 @@ public class MovimientoController : Controller
                 TempData["Ok"] = "Entrada de stock registrada correctamente.";
                 return RedirectToAction(nameof(Index));
             }
-            ModelState.AddModelError(string.Empty, error);
+            TempData["Error"] = error;
         }
 
         await CargarListasAsync(model);
@@ -115,7 +115,7 @@ public class MovimientoController : Controller
                 TempData["Ok"] = "Salida de stock registrada correctamente.";
                 return RedirectToAction(nameof(Index));
             }
-            ModelState.AddModelError(string.Empty, error);
+            TempData["Error"] = error;
         }
 
         await CargarListasAsync(model);
@@ -164,7 +164,7 @@ public class MovimientoController : Controller
                     TempData["Ok"] = $"Transferencia de {model.Cantidad} unidades registrada correctamente.";
                     return RedirectToAction(nameof(Index));
                 }
-                ModelState.AddModelError(string.Empty, error);
+                TempData["Error"] = error;
             }
         }
 

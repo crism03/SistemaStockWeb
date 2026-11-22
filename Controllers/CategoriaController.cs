@@ -102,9 +102,20 @@ public class CategoriaController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    // GET: Categoria/Delete/5
+    public async Task<IActionResult> Delete(int? id)
+    {
+        if (id == null) return NotFound();
+
+        var model = await ConsultarViewModels().FirstOrDefaultAsync(c => c.id == id);
+        if (model == null) return NotFound();
+
+        return View(model);
+    }
+
     // POST: Categoria/Delete/5
-    [HttpPost, ValidateAntiForgeryToken]
-    public async Task<IActionResult> Delete(int id)
+    [HttpPost, ActionName("Delete"), ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var categoria = await _context.Categorias.FindAsync(id);
         if (categoria == null) return NotFound();

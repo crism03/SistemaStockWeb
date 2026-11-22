@@ -24,6 +24,17 @@ public class ProveedorController : Controller
         return View(proveedores.Select(ToViewModel).ToList());
     }
 
+    // GET: Proveedor/Details/5
+    public async Task<IActionResult> Details(int? id)
+    {
+        if (id == null) return NotFound();
+
+        var proveedor = await _context.Proveedores.AsNoTracking().FirstOrDefaultAsync(p => p.id == id);
+        if (proveedor == null) return NotFound();
+
+        return View(ToViewModel(proveedor));
+    }
+
     // GET: Proveedor/Create
     public IActionResult Create()
     {
@@ -34,13 +45,7 @@ public class ProveedorController : Controller
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(ProveedorViewModel model)
     {
-        if (!ModelState.IsValid) return View(model);
-
-        if (await ExisteDocumentoAsync(model.Documento))
-        {
-            ModelState.AddModelError(nameof(model.Documento), "Ya existe un proveedor con este documento.");
-            return View(model);
-        }
+        if (!ModelState.IsValid || await HayDuplicadoAsync(model)) return View(model);
 
         var proveedor = new Proveedor();
         AplicarCambios(proveedor, model);
@@ -67,16 +72,10 @@ public class ProveedorController : Controller
     public async Task<IActionResult> Edit(int id, ProveedorViewModel model)
     {
         if (id != model.id) return NotFound();
-        if (!ModelState.IsValid) return View(model);
+        if (!ModelState.IsValid || await HayDuplicadoAsync(model)) return View(model);
 
         var proveedor = await _context.Proveedores.FindAsync(id);
         if (proveedor == null) return NotFound();
-
-        if (await ExisteDocumentoAsync(model.Documento, id))
-        {
-            ModelState.AddModelError(nameof(model.Documento), "Ya existe un proveedor con este documento.");
-            return View(model);
-        }
 
         AplicarCambios(proveedor, model);
         proveedor.UpdatedAt = DateTime.UtcNow;
@@ -86,9 +85,20 @@ public class ProveedorController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    // GET: Proveedor/Delete/5
+    public async Task<IActionResult> Delete(int? id)
+    {
+        if (id == null) return NotFound();
+
+        var proveedor = await _context.Proveedores.AsNoTracking().FirstOrDefaultAsync(p => p.id == id);
+        if (proveedor == null) return NotFound();
+
+        return View(ToViewModel(proveedor));
+    }
+
     // POST: Proveedor/Delete/5
-    [HttpPost, ValidateAntiForgeryToken]
-    public async Task<IActionResult> Delete(int id)
+    [HttpPost, ActionName("Delete"), ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var proveedor = await _context.Proveedores.FindAsync(id);
         if (proveedor == null) return NotFound();
@@ -131,13 +141,28 @@ public class ProveedorController : Controller
         proveedor.Activo = model.Activo;
     }
 
-    /// <summary>Verifica si otro proveedor ya usa el mismo documento (solo si se informó uno).</summary>
-    private async Task<bool> ExisteDocumentoAsync(string? documento, int idExcluido = 0)
+    /// <summary>Valida que no exista otro proveedor con el mismo nombre o documento, sin distinguir mayúsculas.</summary>
+    private async Task<bool> HayDuplicadoAsync(ProveedorViewModel model)
     {
-        if (string.IsNullOrWhiteSpace(documento)) return false;
+        var hayDuplicado = false;
+        var nombre = model.Nombre.Trim().ToLower();
 
-        var documentoNormalizado = documento.Trim().ToLower();
-        return await _context.Proveedores.AnyAsync(p =>
-            p.id != idExcluido && p.Documento != null && p.Documento.ToLower() == documentoNormalizado);
+        if (await _context.Proveedores.AnyAsync(p => p.id != model.id && p.Nombre.ToLower() == nombre))
+        {
+            ModelState.AddModelError(nameof(model.Nombre), "Ya existe un proveedor con este nombre.");
+            hayDuplicado = true;
+        }
+
+        if (!string.IsNullOrWhiteSpace(model.Documento))
+        {
+            var documento = model.Documento.Trim().ToLower();
+            if (await _context.Proveedores.AnyAsync(p => p.id != model.id && p.Documento != null && p.Documento.ToLower() == documento))
+            {
+                ModelState.AddModelError(nameof(model.Documento), "Ya existe un proveedor con este documento.");
+                hayDuplicado = true;
+            }
+        }
+
+        return hayDuplicado;
     }
 }

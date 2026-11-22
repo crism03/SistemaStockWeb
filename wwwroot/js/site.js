@@ -16,28 +16,41 @@ function mostrarError(mensaje) {
     alerta.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-$(document).ready(function () {
-    // Tablas con buscador, orden y paginado en español.
-    $('#miTabla').DataTable({
-        language: { url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json' }
-    });
+// Confirmación antes de eliminar: formularios con la clase "form-eliminar" y el atributo data-nombre.
+// Se escucha el evento en todo el documento para que funcione también con las filas
+// que DataTables saca de la página al paginar, y sin depender de otras librerías.
+document.addEventListener('submit', function (e) {
+    const formulario = e.target.closest('form.form-eliminar');
+    if (!formulario) return;
 
-    // Confirmación antes de eliminar (formularios con la clase "form-eliminar" y data-nombre).
-    // Se usa delegación de eventos porque DataTables quita del DOM las filas de otras páginas.
-    $(document).on('submit', 'form.form-eliminar', function (e) {
-        e.preventDefault();
-        const formulario = this;
-        Swal.fire({
-            title: '¿Eliminar registro?',
-            text: `Se eliminará "${formulario.dataset.nombre}". Esta acción no se puede deshacer.`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar'
-        }).then(resultado => {
-            if (resultado.isConfirmed) formulario.submit();
-        });
+    e.preventDefault();
+    const nombre = formulario.dataset.nombre;
+
+    // Respaldo por si SweetAlert no se pudo cargar.
+    if (typeof Swal === 'undefined') {
+        if (confirm(`¿Eliminar "${nombre}"? Esta acción no se puede deshacer.`)) formulario.submit();
+        return;
+    }
+
+    Swal.fire({
+        title: '¿Eliminar registro?',
+        text: `Se eliminará "${nombre}". Esta acción no se puede deshacer.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then(resultado => {
+        if (resultado.isConfirmed) formulario.submit();
+    });
+});
+
+// Tablas con buscador, orden y paginado en español.
+document.addEventListener('DOMContentLoaded', function () {
+    if (typeof DataTable === 'undefined' || !document.getElementById('miTabla')) return;
+
+    new DataTable('#miTabla', {
+        language: { url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json' }
     });
 });

@@ -1,0 +1,22 @@
+﻿@model SistemaStockWeb.Models.ViewModels.DepositoViewModel
+@{
+    ViewData["Title"] = "Depósitos";
+    ViewData["SubTitle"] = "Detalle del depósito";
+}
+
+<dl class="row">
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Nombre)</dt>
+    <dd class="col-sm-9">@Model.Nombre</dd>
+
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Ubicacion)</dt>
+    <dd class="col-sm-9">@(Model.Ubicacion ?? "-")</dd>
+
+    <dt class="col-sm-3">Estado</dt>
+    <dd class="col-sm-9">
+        <span class="badge @(Model.Activo ? "text-bg-success" : "text-bg-secondary")">@(Model.Activo ? "Activo" : "Inactivo")</span>
+    </dd>
+</dl>
+
+<a asp-action="Delete" asp-route-id="@Model.id" class="btn btn-danger">Eliminar</a>
+<a asp-action="Edit" asp-route-id="@Model.id" class="btn btn-primary">Editar</a>
+<a asp-action="Index" class="btn btn-secondary">Volver</a>

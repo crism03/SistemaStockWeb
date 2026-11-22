@@ -33,14 +33,17 @@ public class ProductoViewModel
     [Display(Name = "Unidad de medida")]
     public UnidadMedida UnidadDeMedida { get; set; }
 
+    [Required(ErrorMessage = "El precio de costo es obligatorio.")]
     [Range(0, 1000000, ErrorMessage = "El precio debe estar entre {1} y {2}.")]
     [Display(Name = "Precio de costo")]
     public decimal PrecioCosto { get; set; }
 
+    [Required(ErrorMessage = "El precio de venta es obligatorio.")]
     [Range(0, 1000000, ErrorMessage = "El precio debe estar entre {1} y {2}.")]
     [Display(Name = "Precio de venta")]
     public decimal PrecioVenta { get; set; }
 
+    [Required(ErrorMessage = "El stock mínimo es obligatorio.")]
     [Range(0, int.MaxValue, ErrorMessage = "El stock mínimo debe ser un número positivo.")]
     [Display(Name = "Stock mínimo")]
     public int StockMinimo { get; set; } = 5;

@@ -1,11 +1,17 @@
 ﻿@{
     var controller = ViewContext.RouteData.Values["controller"]?.ToString();
     var action = ViewContext.RouteData.Values["action"]?.ToString();
+    var enMovimientos = controller == "Movimiento";
+
+    var esAdministrador = User.IsInRole("Administrador");
+    var puedeGestionar = esAdministrador || User.IsInRole("Encargado");
+    var puedeOperar = puedeGestionar || User.IsInRole("Operador");
+    var puedeVerReportes = puedeGestionar || User.IsInRole("Consulta");
 }
 <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
     <div class="sidebar-brand">
         <a asp-controller="Home" asp-action="Index" class="brand-link">
-            <i class="bi bi-boxes fs-4 me-2"></i>
+            <img src="~/img/logo.png" alt="Logo de SistemaStockWeb" class="brand-image" asp-append-version="true" />
             <span class="brand-text fw-light">Sistema Stock</span>
         </a>
     </div>
@@ -28,46 +34,62 @@
                         <p>Stock</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a asp-controller="Movimiento" asp-action="Index"
-                       class="nav-link @(controller == "Movimiento" && action == "Index" ? "active" : "")">
-                        <i class="nav-icon bi bi-list-ul"></i>
-                        <p>Historial</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a asp-controller="Reporte" asp-action="Index"
-                       class="nav-link @(controller == "Reporte" ? "active" : "")">
-                        <i class="nav-icon bi bi-file-earmark-bar-graph"></i>
-                        <p>Reportes</p>
-                    </a>
-                </li>
-                @if (User.IsInRole("Administrador") || User.IsInRole("Encargado") || User.IsInRole("Operador"))
+
+                @if (puedeOperar)
+                {
+                    <li class="nav-item @(enMovimientos ? "menu-open" : "")">
+                        <a href="#" class="nav-link @(enMovimientos ? "active" : "")">
+                            <i class="nav-icon bi bi-arrow-left-right"></i>
+                            <p>
+                                Movimientos
+                                <i class="nav-arrow bi bi-chevron-right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a asp-controller="Movimiento" asp-action="Entrada"
+                                   class="nav-link @(enMovimientos && action == "Entrada" ? "active" : "")">
+                                    <i class="nav-icon bi bi-box-arrow-in-down"></i>
+                                    <p>Nueva entrada</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a asp-controller="Movimiento" asp-action="Salida"
+                                   class="nav-link @(enMovimientos && action == "Salida" ? "active" : "")">
+                                    <i class="nav-icon bi bi-box-arrow-up"></i>
+                                    <p>Nueva salida</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a asp-controller="Movimiento" asp-action="Transferencia"
+                                   class="nav-link @(enMovimientos && action == "Transferencia" ? "active" : "")">
+                                    <i class="nav-icon bi bi-truck"></i>
+                                    <p>Transferencia</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a asp-controller="Movimiento" asp-action="Index"
+                                   class="nav-link @(enMovimientos && action == "Index" ? "active" : "")">
+                                    <i class="nav-icon bi bi-clock-history"></i>
+                                    <p>Historial</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                }
+
+                @if (puedeVerReportes)
                 {
                     <li class="nav-item">
-                        <a asp-controller="Movimiento" asp-action="Entrada"
-                           class="nav-link @(controller == "Movimiento" && action == "Entrada" ? "active" : "")">
-                            <i class="nav-icon bi bi-box-arrow-in-down"></i>
-                            <p>Nueva entrada</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a asp-controller="Movimiento" asp-action="Salida"
-                           class="nav-link @(controller == "Movimiento" && action == "Salida" ? "active" : "")">
-                            <i class="nav-icon bi bi-box-arrow-up"></i>
-                            <p>Nueva salida</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a asp-controller="Movimiento" asp-action="Transferencia"
-                           class="nav-link @(controller == "Movimiento" && action == "Transferencia" ? "active" : "")">
-                            <i class="nav-icon bi bi-arrow-left-right"></i>
-                            <p>Transferencia</p>
+                        <a asp-controller="Reporte" asp-action="Index"
+                           class="nav-link @(controller == "Reporte" ? "active" : "")">
+                            <i class="nav-icon bi bi-file-earmark-bar-graph"></i>
+                            <p>Reportes</p>
                         </a>
                     </li>
                 }
 
-                @if (User.IsInRole("Administrador") || User.IsInRole("Encargado"))
+                @if (puedeGestionar)
                 {
                     <li class="nav-header">INVENTARIO</li>
                     <li class="nav-item">
@@ -84,10 +106,7 @@
                             <p>Categorías</p>
                         </a>
                     </li>
-                }
 
-                @if (User.IsInRole("Administrador") || User.IsInRole("Encargado"))
-                {
                     <li class="nav-header">MAESTROS</li>
                     <li class="nav-item">
                         <a asp-controller="Deposito" asp-action="Index"
@@ -112,7 +131,7 @@
                     </li>
                 }
 
-                @if (User.IsInRole("Administrador"))
+                @if (esAdministrador)
                 {
                     <li class="nav-header">ADMINISTRACIÓN</li>
                     <li class="nav-item">

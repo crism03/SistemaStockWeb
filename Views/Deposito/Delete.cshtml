@@ -1,0 +1,24 @@
+﻿@model SistemaStockWeb.Models.ViewModels.DepositoViewModel
+@{
+    ViewData["Title"] = "Depósitos";
+    ViewData["SubTitle"] = "Eliminar depósito";
+}
+
+<div class="alert alert-warning">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    ¿Está seguro de que desea eliminar este depósito? Esta acción no se puede deshacer.
+    Si tiene stock o movimientos registrados, no podrá eliminarse.
+</div>
+
+<dl class="row">
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Nombre)</dt>
+    <dd class="col-sm-9">@Model.Nombre</dd>
+
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Ubicacion)</dt>
+    <dd class="col-sm-9">@(Model.Ubicacion ?? "-")</dd>
+</dl>
+
+<form asp-action="Delete" asp-route-id="@Model.id" method="post">
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

@@ -11,7 +11,7 @@ using SistemaStockWeb.Models.Enum;
 
 namespace SistemaStockWeb.Controllers;
 
-[Authorize]
+[Authorize(Roles = "Administrador,Encargado,Consulta")]
 public class ReporteController : Controller
 {
     private static readonly string[] Encabezados =

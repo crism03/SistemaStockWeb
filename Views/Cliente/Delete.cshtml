@@ -1,0 +1,30 @@
+﻿@model SistemaStockWeb.Models.ViewModels.ClienteViewModel
+@{
+    ViewData["Title"] = "Clientes";
+    ViewData["SubTitle"] = "Eliminar cliente";
+}
+
+<div class="alert alert-warning">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    ¿Está seguro de que desea eliminar este cliente? Esta acción no se puede deshacer.
+    Si tiene movimientos registrados, no podrá eliminarse.
+</div>
+
+<dl class="row">
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Nombre)</dt>
+    <dd class="col-sm-9">@Model.Nombre</dd>
+
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Documento)</dt>
+    <dd class="col-sm-9">@(Model.Documento ?? "-")</dd>
+
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Telefono)</dt>
+    <dd class="col-sm-9">@(Model.Telefono ?? "-")</dd>
+
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Email)</dt>
+    <dd class="col-sm-9">@(Model.Email ?? "-")</dd>
+</dl>
+
+<form asp-action="Delete" asp-route-id="@Model.id" method="post">
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

@@ -1,0 +1,33 @@
+﻿@model SistemaStockWeb.Models.ViewModels.CategoriaViewModel
+@{
+    ViewData["Title"] = "Categorías";
+    ViewData["SubTitle"] = "Eliminar categoría";
+}
+
+<div class="alert alert-warning">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    ¿Está seguro de que desea eliminar esta categoría? Esta acción no se puede deshacer.
+</div>
+
+@if (Model.CantidadProductos > 0)
+{
+    <div class="alert alert-danger">
+        Esta categoría tiene @Model.CantidadProductos producto(s) asociado(s), por lo que no podrá eliminarse.
+    </div>
+}
+
+<dl class="row">
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Nombre)</dt>
+    <dd class="col-sm-9">@Model.Nombre</dd>
+
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Descripcion)</dt>
+    <dd class="col-sm-9">@(Model.Descripcion ?? "-")</dd>
+
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.CantidadProductos)</dt>
+    <dd class="col-sm-9">@Model.CantidadProductos</dd>
+</dl>
+
+<form asp-action="Delete" asp-route-id="@Model.id" method="post">
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

@@ -36,6 +36,9 @@
                         <span class="badge @(item.Activo ? "text-bg-success" : "text-bg-secondary")">@(item.Activo ? "Activo" : "Inactivo")</span>
                     </td>
                     <td class="text-end">
+                        <a asp-action="Details" asp-route-id="@item.id" class="btn btn-sm btn-outline-secondary" title="Ver">
+                            <i class="bi bi-eye"></i>
+                        </a>
                         <a asp-action="Edit" asp-route-id="@item.id" class="btn btn-sm btn-outline-primary" title="Editar">
                             <i class="bi bi-pencil"></i>
                         </a>

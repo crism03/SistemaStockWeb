@@ -1,0 +1,43 @@
+﻿@model SistemaStockWeb.Models.ViewModels.ProveedorViewModel
+@{
+    ViewData["Title"] = "Proveedores";
+    ViewData["SubTitle"] = "Eliminar proveedor";
+}
+
+<div class="alert alert-warning">
+    ¿Seguro que querés eliminar este proveedor?
+</div>
+
+<dl class="row">
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Nombre)</dt>
+    <dd class="col-sm-9">@Model.Nombre</dd>
+
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Documento)</dt>
+    <dd class="col-sm-9">@Model.Documento</dd>
+
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Contacto)</dt>
+    <dd class="col-sm-9">@Model.Contacto</dd>
+
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Telefono)</dt>
+    <dd class="col-sm-9">@Model.Telefono</dd>
+
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Email)</dt>
+    <dd class="col-sm-9">@Model.Email</dd>
+
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Direccion)</dt>
+    <dd class="col-sm-9">@Model.Direccion</dd>
+
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Observaciones)</dt>
+    <dd class="col-sm-9">@Model.Observaciones</dd>
+
+    <dt class="col-sm-3">Estado</dt>
+    <dd class="col-sm-9">
+        <span class="badge @(Model.Activo ? "text-bg-success" : "text-bg-secondary")">@(Model.Activo ? "Activo" : "Inactivo")</span>
+    </dd>
+</dl>
+
+<form asp-action="Delete" asp-route-id="@Model.id" method="post" class="mt-3">
+    <input type="hidden" asp-for="id" />
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

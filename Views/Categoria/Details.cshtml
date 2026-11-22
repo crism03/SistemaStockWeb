@@ -26,5 +26,6 @@
     <dd class="col-sm-9">@(Model.UpdatedAt?.ToLocalTime().ToString("dd/MM/yyyy HH:mm") ?? "-")</dd>
 </dl>
 
+<a asp-action="Delete" asp-route-id="@Model.id" class="btn btn-danger">Eliminar</a>
 <a asp-action="Edit" asp-route-id="@Model.id" class="btn btn-primary">Editar</a>
 <a asp-action="Index" class="btn btn-secondary">Volver</a>

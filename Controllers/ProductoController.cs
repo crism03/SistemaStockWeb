@@ -114,9 +114,22 @@ public class ProductoController : Controller
         return View(model);
     }
 
+    // GET: Producto/Delete/5
+    public async Task<IActionResult> Delete(int? id)
+    {
+        if (id == null) return NotFound();
+
+        var producto = await _context.Productos.AsNoTracking()
+            .Include(p => p.Categoria)
+            .FirstOrDefaultAsync(p => p.id == id);
+        if (producto == null) return NotFound();
+
+        return View(ToViewModel(producto));
+    }
+
     // POST: Producto/Delete/5
-    [HttpPost, ValidateAntiForgeryToken]
-    public async Task<IActionResult> Delete(int id)
+    [HttpPost, ActionName("Delete"), ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var producto = await _context.Productos.FindAsync(id);
         if (producto == null) return NotFound();
